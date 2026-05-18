@@ -1,0 +1,47 @@
+name: Build slate-themed image
+
+# Custom fork build: recolors the wishlist theme purple -> slate.
+# Builds the upstream Dockerfile unmodified (Vite/Tailwind recompiles the
+# patched src/wishlist.css). Publishes to this fork's GHCR namespace.
+# Branch `slate` is cut from upstream tag v0.64.1.
+
+on:
+  push:
+    branches: [slate]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          provenance: false
+          tags: |
+            ghcr.io/coultonf/wishlist:v0.64.1-slate
+            ghcr.io/coultonf/wishlist:slate
+          build-args: |
+            VERSION=v0.64.1-slate
+            SHA=${{ github.sha }}
