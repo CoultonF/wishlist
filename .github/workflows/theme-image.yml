@@ -40,8 +40,8 @@ jobs:
           push: true
           provenance: false
           tags: |
-            ghcr.io/coultonf/wishlist:v0.64.1-slate
+            ghcr.io/coultonf/wishlist:v0.64.1-slate.1
             ghcr.io/coultonf/wishlist:slate
           build-args: |
-            VERSION=v0.64.1-slate
+            VERSION=v0.64.1-slate.1
             SHA=${{ github.sha }}
